@@ -8,7 +8,14 @@ logger = logging.getLogger(__name__)
 
 
 class MattermostClient:
+    """Async HTTP client for the Mattermost REST API v4."""
+
     def __init__(self, url: str, token: str) -> None:
+        """
+        Args:
+            url: Base URL of the Mattermost instance (e.g. ``http://localhost:8065``).
+            token: Bot access token used for Bearer authentication.
+        """
         self.base_url = url.rstrip("/") + "/api/v4"
         self.headers = {**BASE_HEADERS, "Authorization": f"Bearer {token}"}
         self._session: aiohttp.ClientSession | None = None
@@ -22,6 +29,10 @@ class MattermostClient:
             await self._session.close()
 
     async def get_posts_for_channel(self, channel_id: str, page: int = 0, per_page: int = 60) -> dict:
+        """Fetch a page of posts from a channel, including root posts and replies.
+
+        Returns the raw API response dict with a ``posts`` key mapping post IDs to post objects.
+        """
         url = f"{self.base_url}/channels/{channel_id}/posts"
         logger.debug("GET posts channel=%s page=%d", channel_id, page)
         async with self._session.get(url, params={"page": page, "per_page": per_page}) as resp:
@@ -31,6 +42,7 @@ class MattermostClient:
             return data
 
     async def get_reactions(self, post_id: str) -> list[dict]:
+        """Return all emoji reactions on a post. Returns an empty list if there are none."""
         logger.debug("GET reactions post=%s", post_id)
         async with self._session.get(f"{self.base_url}/posts/{post_id}/reactions") as resp:
             resp.raise_for_status()
@@ -39,17 +51,26 @@ class MattermostClient:
             return reactions
 
     async def get_my_user_id(self) -> str:
+        """Return the user ID of the authenticated bot account."""
         async with self._session.get(f"{self.base_url}/users/me") as resp:
             resp.raise_for_status()
             data = await resp.json()
             return data["id"]
 
     async def ping(self) -> None:
+        """Check that the Mattermost server is reachable and responding."""
         logger.debug("GET /system/ping")
         async with self._session.get(f"{self.base_url}/system/ping") as resp:
             resp.raise_for_status()
 
     async def create_post(self, channel_id: str, message: str, root_id: str = "") -> dict:
+        """Post a message to a channel.
+
+        Args:
+            channel_id: Target channel.
+            message: Message text (supports Markdown and ``@mentions``).
+            root_id: If set, the post is created as a reply in that thread.
+        """
         logger.info("POST reply channel=%s root=%s", channel_id, root_id or "—")
         payload: dict = {"channel_id": channel_id, "message": message}
         if root_id:

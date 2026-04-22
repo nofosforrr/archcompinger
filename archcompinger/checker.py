@@ -13,6 +13,14 @@ logger = logging.getLogger(__name__)
 
 
 async def check_channel(client: MattermostClient, channel_id: str, bot_user_id: str) -> None:
+    """Check a single channel for unreviewed @moac threads and send reminders.
+
+    A thread is eligible for a reminder when all of the following are true:
+    - The root post mentions ``@moac``.
+    - The root post is older than ``THRESHOLD_SECONDS``.
+    - The root post has no 🔍 (``mag``) reaction.
+    - At least ``REMIND_INTERVAL`` seconds have passed since the bot's last reminder in that thread.
+    """
     data = await client.get_posts_for_channel(channel_id)
     posts: dict = data.get("posts", {})
     now = time.time()
@@ -54,6 +62,7 @@ async def check_channel(client: MattermostClient, channel_id: str, bot_user_id: 
 
 
 async def check_all_channels(client: MattermostClient, channel_ids: list[str], bot_user_id: str) -> None:
+    """Run ``check_channel`` for every channel in the list, logging but not re-raising per-channel errors."""
     for channel_id in channel_ids:
         try:
             await check_channel(client, channel_id, bot_user_id)

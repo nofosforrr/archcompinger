@@ -51,6 +51,7 @@ async def _loop() -> None:
 
 
 def run() -> None:
+    """Entry point. Starts the bot and runs the polling loop until interrupted."""
     asyncio.run(_loop())
 
 
