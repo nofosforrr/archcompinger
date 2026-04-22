@@ -5,7 +5,8 @@ from archcompinger.client import MattermostClient
 
 LENS_EMOJI = "mag"  # Mattermost emoji name for 🔍
 MOAC_MENTION = "@moac"
-THRESHOLD_SECONDS = 15  # 24 * 3600 in production
+THRESHOLD_SECONDS = 15   # 24 * 3600 in production
+REMIND_INTERVAL = 20     # 3600 in production
 REMINDER_MESSAGE = "@moac This thread has not been reviewed yet (no 🔍 reaction after 24 hours)."
 
 logger = logging.getLogger(__name__)
@@ -16,11 +17,14 @@ async def check_channel(client: MattermostClient, channel_id: str, bot_user_id: 
     posts: dict = data.get("posts", {})
     now = time.time()
 
-    # Build a set of root_ids that the bot has already replied to
-    already_replied = {
-        p["root_id"] for p in posts.values()
-        if p.get("root_id") and p.get("user_id") == bot_user_id
-    }
+    # For each root post, find the timestamp of the bot's most recent reminder reply
+    last_reminded: dict[str, float] = {}
+    for p in posts.values():
+        root_id = p.get("root_id")
+        if root_id and p.get("user_id") == bot_user_id:
+            ts = p.get("create_at", 0) / 1000
+            if ts > last_reminded.get(root_id, 0):
+                last_reminded[root_id] = ts
 
     moac_posts = [
         (pid, p) for pid, p in posts.items()
@@ -29,10 +33,6 @@ async def check_channel(client: MattermostClient, channel_id: str, bot_user_id: 
     logger.info("Channel=%s: %d total posts, %d mention %s", channel_id, len(posts), len(moac_posts), MOAC_MENTION)
 
     for post_id, post in moac_posts:
-        if post_id in already_replied:
-            logger.info("Post=%s — already reminded, skipping", post_id)
-            continue
-
         age_seconds = now - post.get("create_at", 0) / 1000
         if age_seconds < THRESHOLD_SECONDS:
             logger.info("Post=%s age=%.0fs — too recent, skipping", post_id, age_seconds)
@@ -42,6 +42,11 @@ async def check_channel(client: MattermostClient, channel_id: str, bot_user_id: 
         has_lens = any(r.get("emoji_name") == LENS_EMOJI for r in reactions)
         if has_lens:
             logger.info("Post=%s age=%.0fs — has 🔍, skipping", post_id, age_seconds)
+            continue
+
+        since_last = now - last_reminded.get(post_id, 0)
+        if since_last < REMIND_INTERVAL:
+            logger.info("Post=%s — reminded %.0fs ago, next in %.0fs", post_id, since_last, REMIND_INTERVAL - since_last)
             continue
 
         logger.info("Post=%s age=%.0fs — no 🔍, sending reminder", post_id, age_seconds)
