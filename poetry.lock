@@ -1,0 +1,145 @@
+[[package]]
+name = "aiohappyeyeballs"
+version = "2.6.1"
+description = "Happy Eyeballs for asyncio"
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[[package]]
+name = "aiohttp"
+version = "3.13.5"
+description = "Async http client/server framework (asyncio)"
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[package.dependencies]
+aiohappyeyeballs = ">=2.5.0"
+aiosignal = ">=1.4.0"
+async-timeout = {version = ">=4.0,<6.0", markers = "python_version < \"3.11\""}
+attrs = ">=17.3.0"
+frozenlist = ">=1.1.1"
+multidict = ">=4.5,<7.0"
+propcache = ">=0.2.0"
+yarl = ">=1.17.0,<2.0"
+
+[package.extras]
+speedups = ["aiodns (>=3.3.0)", "Brotli (>=1.2)", "brotlicffi (>=1.2)", "backports.zstd"]
+
+[[package]]
+name = "aiosignal"
+version = "1.4.0"
+description = "aiosignal: a list of registered asynchronous callbacks"
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[package.dependencies]
+frozenlist = ">=1.1.0"
+typing-extensions = {version = ">=4.2", markers = "python_version < \"3.13\""}
+
+[[package]]
+name = "async-timeout"
+version = "5.0.1"
+description = "Timeout context manager for asyncio programs"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[[package]]
+name = "attrs"
+version = "26.1.0"
+description = "Classes Without Boilerplate"
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[[package]]
+name = "frozenlist"
+version = "1.8.0"
+description = "A list-like structure which implements collections.abc.MutableSequence"
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[[package]]
+name = "idna"
+version = "3.13"
+description = "Internationalized Domain Names in Applications (IDNA)"
+category = "main"
+optional = false
+python-versions = ">=3.8"
+
+[package.extras]
+all = ["ruff (>=0.6.2)", "mypy (>=1.11.2)", "pytest (>=8.3.2)"]
+
+[[package]]
+name = "multidict"
+version = "6.7.1"
+description = "multidict implementation"
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[package.dependencies]
+typing-extensions = {version = ">=4.1.0", markers = "python_version < \"3.11\""}
+
+[[package]]
+name = "propcache"
+version = "0.4.1"
+description = "Accelerated property cache"
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[[package]]
+name = "python-dotenv"
+version = "1.2.2"
+description = "Read key-value pairs from a .env file and set them as environment variables"
+category = "main"
+optional = false
+python-versions = ">=3.10"
+
+[package.extras]
+cli = ["click (>=5.0)"]
+
+[[package]]
+name = "typing-extensions"
+version = "4.15.0"
+description = "Backported and Experimental Type Hints for Python 3.9+"
+category = "main"
+optional = false
+python-versions = ">=3.9"
+
+[[package]]
+name = "yarl"
+version = "1.23.0"
+description = "Yet another URL library"
+category = "main"
+optional = false
+python-versions = ">=3.10"
+
+[package.dependencies]
+idna = ">=2.0"
+multidict = ">=4.0"
+propcache = ">=0.2.1"
+
+[metadata]
+lock-version = "1.1"
+python-versions = ">=3.10,<4.0"
+content-hash = "d854256e4f3272a39a140bc99ef74cf3efc4888326c01713233a59865a476ad7"
+
+[metadata.files]
+aiohappyeyeballs = []
+aiohttp = []
+aiosignal = []
+async-timeout = []
+attrs = []
+frozenlist = []
+idna = []
+multidict = []
+propcache = []
+python-dotenv = []
+typing-extensions = []
+yarl = []

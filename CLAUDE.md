@@ -41,16 +41,16 @@ docker compose build archcompinger && docker compose up -d archcompinger
 ## Running locally (without Docker)
 
 ```bash
-pip install -e .
+poetry install
 cp .env.example .env  # fill in values
-archcompinger
+poetry run archcompinger
 ```
 
 Lint:
 
 ```bash
-ruff check .
-ruff format .
+poetry run ruff check .
+poetry run ruff format .
 ```
 
 ## Architecture
