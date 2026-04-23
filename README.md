@@ -86,7 +86,7 @@ docker compose build archcompinger && docker compose up -d archcompinger
 ## Running locally (without Docker)
 
 ```bash
-pip install -e .
+poetry install
 cp .env.example .env  # fill in values
-archcompinger
+poetry run archcompinger
 ```
