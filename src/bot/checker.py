@@ -1,7 +1,7 @@
 import logging
 import time
 
-from archcompinger.client import MattermostClient
+from bot.client import MattermostClient
 
 LENS_EMOJI = "mag"  # Mattermost emoji name for 🔍
 MOAC_MENTION = "@moac"

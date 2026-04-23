@@ -11,7 +11,7 @@ RUN pip install --no-cache-dir "poetry>=1.8,<2.0"
 COPY pyproject.toml poetry.lock ./
 RUN poetry install --only main --no-root && rm -rf $POETRY_CACHE_DIR
 
-COPY archcompinger/ archcompinger/
+COPY src/ src/
 RUN poetry install --only main
 
 CMD ["archcompinger"]

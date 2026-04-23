@@ -4,8 +4,8 @@ import os
 
 from dotenv import load_dotenv
 
-from archcompinger.checker import check_all_channels
-from archcompinger.client import MattermostClient
+from bot.checker import check_all_channels
+from bot.client import MattermostClient
 
 load_dotenv()
 
